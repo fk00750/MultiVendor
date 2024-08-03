@@ -122,9 +122,12 @@ exports.Login = async (req, res, next) => {
 
 exports.GoogleLogin = async (req, res, next) => {
     try {
+        let user
+        let password
+
         const { access_token } = req.body;
 
-        if (!accessToken)
+        if (!access_token)
             return next(PrimaryErrorHandler(400, "Invalid request"));
 
         const result = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
@@ -134,13 +137,18 @@ exports.GoogleLogin = async (req, res, next) => {
             },
         });
 
-        let data = await result.json();
+        let data = await result.data;
 
         if (!data) return next(PrimaryErrorHandler.somethingWentWrong())
 
-        const user = await authManager.findByEmail(data.email);
+        user = await authManager.findByEmail(data.email);
 
-        if (!user) return next(PrimaryErrorHandler.notFound("user not found"));
+        if (!user) {
+            password = data.id + data.name;
+            user = await authManager.createUser(data.name, data.email, password)
+        }
+
+        if (!user) return next(PrimaryErrorHandler.notFound("Invalid user"));
 
         // find and delete existing refresh token
         const existingRefreshToken = await tokenManager.findRefreshTokenById(

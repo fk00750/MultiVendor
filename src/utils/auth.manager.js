@@ -20,7 +20,7 @@ class AuthManager {
 
     async createUser(name, email, password, city, pincode) {
         try {
-            if (!name || !email || !password || !city || !pincode) throw new Error("Undefined User Fields")
+            if (!name || !email || !password) throw new Error("Undefined User Fields")
 
             // create unique id
             const userId = await this.createUniqueId('user')
