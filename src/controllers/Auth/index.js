@@ -1,4 +1,3 @@
-const { default: axios } = require("axios")
 const AuthManager = require("../../utils/auth.manager")
 const IssueAccessAndRefreshToken = require("../../utils/jwt/issue.jwt.token")
 const PrimaryErrorHandler = require("../../utils/primary.error.handler")

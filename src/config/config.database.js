@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { connect, connection } = require("mongoose");
 
 const MONGO_URI =
